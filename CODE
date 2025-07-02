@@ -1,0 +1,76 @@
+import cv2
+import mediapipe as mp
+import time
+
+cam=cv2.VideoCapture(0)
+
+mphand=mp.solutions.hands
+hand=mphand.Hands()
+mpdraw=mp.solutions.drawing_utils
+
+ptime=0
+ctime=0
+
+while True:
+    success,img=cam.read()
+
+    imgRGB=cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+    results=hand.process(imgRGB)
+
+    if results.multi_hand_landmarks:
+        for handlms in results.multi_hand_landmarks:
+            for id,lm in enumerate(handlms.landmark):
+                h,w,c=img.shape
+                cx,cy=int(lm.x*w),int(lm.y*h)
+
+                if id==8:
+                    index_top=lm.y
+                elif id==7:
+                    index_middle=lm.y
+                if id==12:
+                    middle_top=lm.y
+                elif id==11:
+                    middle_middle=lm.y
+                if id==16:
+                    ring_top=lm.y
+                elif id==15:
+                    ring_middle=lm.y
+                if id==20:
+                    pinky_top=lm.y
+                elif id==19:
+                    pinky_middle=lm.y
+                if id==4:
+                    thumb_top=lm.x
+                elif id==3:
+                    thumb_middle=lm.x
+
+        if index_top<index_middle:
+                print("Index finger is up!")
+        else:
+            print("Index finger is down!")
+        if middle_top<middle_middle:
+                print("middle finger is up!")
+        else:
+            print("middle finger is down!")
+        if ring_top<ring_middle:
+                print("ring finger is up!")
+        else:
+            print("ring finger is down!")
+        if pinky_top<pinky_middle:
+                print("pinky finger is up!")
+        else:
+            print("pinky finger is down!")
+        if thumb_top<thumb_middle:
+             print("Thumb is down!")
+        else: print("Thumb is up")
+
+    
+        mpdraw.draw_landmarks(img, handlms, mphand.HAND_CONNECTIONS)
+
+    ctime=time.time()
+    fps=1/(ctime-ptime)
+    ptime=ctime
+
+    cv2.putText(img,str(int(fps)),(10,70),cv2.FONT_HERSHEY_COMPLEX,5,(0,255,0),5,cv2.FILLED)
+    cv2.imshow("Check-1", img)
+    cv2.waitKey(1)
