@@ -8,3 +8,5 @@ Here, the program can detect the fingers whether they are up or down in real tim
 - Python
 - OpenCV
 - MediaPipe
+##Testing
+- for live testing of this , visit the link -https://github.com/Madhav-blip/finger-detector-live-v1/upload/main
